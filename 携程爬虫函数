@@ -1,0 +1,35 @@
+#coding=utf-8
+import requests
+from fake_useragent import UserAgent
+import json
+import numpy
+import datetime
+import time
+city={
+    '深圳':'SZX',
+    '成都':'CTU'}
+
+def xiechengrun(dcity,acity,date):
+    url='https://flights.ctrip.com/itinerary/api/12808/products'
+    headers={
+        'User-Agent':UserAgent().chrome,
+        "Content-Type": "application/json",
+           }
+    request_payload = {"flightWay": "Oneway",
+                           "army": "false",
+                           "classType": "ALL",
+                           "hasChild": 'false',
+                           "hasBaby": 'false',
+                           "searchIndex": 1,
+                           "portingToken": "3fec6a5a249a44faba1f245e61e2af88",
+                           "airportParams": [
+                               {"dcity": city.get(dcity), "acity": city.get(acity), "dcityname":str(dcity) , "acityname": str(acity),
+                                "date": date}]}
+    response=requests.post(url,headers=headers,data=json.dumps(request_payload))
+    info=response.text
+    data=json.loads(info)
+    route=data['data'].get("routeList")
+    return route
+
+data=xiechengrun('深圳','成都','2020-07-01')
+
