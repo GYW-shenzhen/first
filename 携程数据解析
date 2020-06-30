@@ -1,0 +1,54 @@
+datajieguo=[]
+for i in range(len(data)):
+    datadict={}
+    f=data[i].get('legs')[0].get('flight') ##航班基本信息
+    datadict['flight_no']=f.get('flightNumber') #航班号
+    datadict['planetype']=f.get('craftTypeName') #机型
+    datadict['orac']=f.get('departureAirportInfo').get('airportTlc')
+    datadict['dstc']=f.get('arrivalAirportInfo').get('airportTlc')
+    datadict['deptime']=f.get('departureDate')
+    datadict['arrtime']=f.get('arrivalDate')
+    datadict['zhundian']=f.get('punctualityRate')
+###舱位信息
+    
+    a1=[]
+    c=data[i].get('legs')[0].get('cabins')##舱位对应信息
+    for j in range(len(c)):
+        dic={}
+        dic['ft_fnum']=c[j].get('price').get('price')
+        dic['rate']=c[j].get('price').get('rate')
+        dic['clsc']=c[j].get('priceClass')
+        dic['cabinClass']=c[j].get('cabinClass')
+        
+        a2=[]
+        try:
+            p=ProductGroups=c[j].get('additionalProductGroups')[0].get('products')
+            for k in range(len(p)):
+                dic1={}
+                dic1['productname']=p[k].get('name')
+                dic1['productprice']=p[k].get('price')
+                a2.append(dic1)
+            dic['product']=a2
+        except:
+            dic1={}
+            dic1['productname']=numpy.NAN
+            dic1['productprice']=numpy.NAN
+            a2.append(dic1)
+            dic['product']=a2
+        a1.append(dic)
+    datadict['cabin']=a1
+    a3=[]
+    try:
+        y=data[i].get('legs')[0].get('characteristic').get('standardPrices')##公布运价
+        for l in range(len(y)):
+            dic2={}
+            dic2['publicclassname']=y[l].get('cabinClass')
+            dic2['publicclassprice']=y[l].get('price')
+            a3.append(dic2)
+    except:
+        dic2['publicclassname']=numpy.NaN
+        dic2['publicclassprice']=numpy.NaN
+        a3.append(dic2)
+    datadict['publicprice']=a3
+    datajieguo.append(datadict)
+print(datajieguo)
